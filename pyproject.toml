@@ -1,4 +1,6 @@
 [tool.poetry]
+name = "telentfy"
+version = "0.0.1"
 description = "Library for sending simple text notifications to ntfy.sh and Telegram channels."
 authors = ["ljbcloud <206458089+ljbcloud@users.noreply.github.com>"]
 readme = "README.md"
@@ -50,5 +52,3 @@ ignore = ["E501", "E741"]
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-name = "telentfy"
-version = "0.1.0"
