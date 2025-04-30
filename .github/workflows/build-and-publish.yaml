@@ -47,6 +47,7 @@ jobs:
 
   publish-to-testpypi:
     name: Publish Python 🐍 distribution 📦 to TestPyPI
+    if: github.triggering_actor != 'dependabot[bot]'
     needs:
       - build
     runs-on: ubuntu-latest
