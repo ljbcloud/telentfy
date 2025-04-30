@@ -7,6 +7,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 logger = logging.getLogger(__name__)
 
+__version__ = "0.0.1"
+
 
 class TelentfySettings(BaseSettings):
     model_config = SettingsConfigDict(extra="allow")
