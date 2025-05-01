@@ -35,6 +35,7 @@ enable = true
 style = "pep440"
 metadata = false
 bump = true
+fix-shallow-repository = true
 
 [tool.black]
 line-length = 88
