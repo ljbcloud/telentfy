@@ -11,7 +11,7 @@ name = "telentfy"
 description = "Library for sending simple text notifications to ntfy.sh and Telegram channels."
 authors = ["ljbcloud <206458089+ljbcloud@users.noreply.github.com>"]
 readme = "README.md"
-version = "v0.0.2"
+version = "v0.0.3"
 
 [tool.poetry.dependencies]
 aiohttp = "^3.11.18"
@@ -63,7 +63,7 @@ extend-exclude = '''
 '''
 
 [tool.bumpver]
-current_version = "v0.0.2"
+current_version = "v0.0.3"
 version_pattern = "vMAJOR.MINOR.PATCH"
 # below fields are optional, default value is false
 commit_message = "chore: update version {old_version} -> {new_version}"
