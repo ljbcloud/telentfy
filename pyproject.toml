@@ -1,22 +1,22 @@
 [build-system]
-requires = ["poetry-core", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+requires = ['poetry-core (>=2.0.0,<3.0.0)', "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
 build-backend = "poetry_dynamic_versioning.backend"
 
 [project]
 name = "telentfy"
+authors = [
+    { name = "ljbcloud", email = "206458089+ljbcloud@users.noreply.github.com" }
+]
+description = "Library for sending simple text notifications to ntfy.sh and Telegram channels."
+license = { file = "LICENSE" }
 dynamic = ["version"]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = ['aiohttp (>=3.11.18,<4.0.0)', 'pydantic-settings (>=2.7.0,<3.0.0)']
 
 [tool.poetry]
-name = "telentfy"
-description = "Library for sending simple text notifications to ntfy.sh and Telegram channels."
-authors = ["ljbcloud <206458089+ljbcloud@users.noreply.github.com>"]
-readme = "README.md"
+requires-poetry = '>=2.0.0,<3.0.0'
 version = "v0.0.3"
-
-[tool.poetry.dependencies]
-aiohttp = "^3.11.18"
-pydantic-settings = "^2.7.0"
-python = ">=3.9"
 
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"
