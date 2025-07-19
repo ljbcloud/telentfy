@@ -1,4 +1,5 @@
 import asyncio
+import importlib.metadata
 import logging
 from typing import Any, Optional, Self
 
@@ -7,15 +8,16 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 logger = logging.getLogger(__name__)
 
-__version__ = "v0.0.3"
+try:
+    __version__ = importlib.metadata.version(__name__)
+except importlib.metadata.PackageNotFoundError:
+    __version__ = "0.0.3"
 
 
 class TelentfySettings(BaseSettings):
     model_config = SettingsConfigDict(extra="allow")
 
-    def __init__(
-        self: Self, env_file: str = ".env", env_prefix: str = "TELENTFY_", **values: Any
-    ):
+    def __init__(self: Self, env_file: str = ".env", env_prefix: str = "TELENTFY_", **values: Any):
         super().__init__(_env_file=env_file, _env_prefix=env_prefix)
 
     # ntfy
@@ -30,7 +32,7 @@ class TelentfySettings(BaseSettings):
 telentfy_settings = TelentfySettings()
 
 
-class NotificationException(Exception):
+class NotificationError(Exception):
     pass
 
 
@@ -68,45 +70,42 @@ class Notifier:
     ) -> Any:
         headers = {"Content-Type": "application/json"}
         try:
-            async with aiohttp.ClientSession() as session:
-                async with session.post(url, headers=headers, json=data) as response:
-                    if response.status != 200:
-                        error_text = await response.text()
-                        raise NotificationException(
-                            f"Failed to send message. status: {response.status}, response: {error_text}"
-                        )
+            async with (
+                aiohttp.ClientSession() as session,
+                session.post(url, headers=headers, json=data) as response,
+            ):
+                if response.status != 200:
+                    error_text = await response.text()
+                    raise NotificationError(
+                        f"Failed to send message. status: {response.status}, \
+                            response: {error_text}"
+                    )
 
-                    return await response.json()
+                return await response.json()
         except aiohttp.ClientError as e:
-            logger.error(f"network error when sending message: {str(e)}")
-            raise NotificationException(f"network error: {str(e)}")
-        except asyncio.TimeoutError:
+            logger.error(f"network error when sending message: {e!s}")
+            raise NotificationError(f"network error: {e!s}") from e
+        except asyncio.TimeoutError as e:
             logger.error("timeout error when sending message")
-            raise NotificationException("request timed out")
+            raise NotificationError("request timed out") from e
         except Exception as e:
-            logger.error(f"unexpected error when sending message: {str(e)}")
-            raise NotificationException(f"unexpected error: {str(e)}")
+            logger.error(f"unexpected error when sending message: {e!s}")
+            raise NotificationError(f"unexpected error: {e!s}") from e
 
-    async def send_notification(
-        self: Self, message: str, log_level: int = logging.INFO
-    ) -> None:
+    async def send_notification(self: Self, message: str, log_level: int = logging.INFO) -> None:
         if self.telegram_enabled:
             await self.notify_telegram(message, log_level)
         if self.ntfy_enabled:
             await self.notify_ntfy(message, log_level)
 
-    async def notify_ntfy(
-        self: Self, message: str, log_level: int = logging.INFO
-    ) -> None:
+    async def notify_ntfy(self: Self, message: str, log_level: int = logging.INFO) -> None:
         logger.log(msg=f"sending notification: {message}", level=log_level)
         await self._post(
             self.settings.NTFY_URL,
             data={"topic": self.settings.NTFY_TOPIC, "message": message},
         )
 
-    async def notify_telegram(
-        self: Self, message: str, log_level: int = logging.INFO
-    ) -> None:
+    async def notify_telegram(self: Self, message: str, log_level: int = logging.INFO) -> None:
         logger.log(msg=f"sending telegram notification: {message}", level=log_level)
         await self._post(
             f"https://api.telegram.org/bot{self.settings.TELEGRAM_API_KEY}/sendMessage",
