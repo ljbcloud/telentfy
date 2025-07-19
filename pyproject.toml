@@ -38,8 +38,8 @@ format-jinja = """
 """
 
 [tool.bumpver]
-current_version = "v0.0.3"
-version_pattern = "vMAJOR.MINOR.PATCH"
+current_version = "0.0.3"
+version_pattern = "MAJOR.MINOR.PATCH"
 # below fields are optional, default value is false
 commit_message = "chore: update version {old_version} -> {new_version}"
 commit = true # creates a new commit for the version update with the above defined message
@@ -48,10 +48,9 @@ tag = true # creates a new tag for the version update
 
 [tool.bumpver.file_patterns]
 "src/telentfy/__init__.py" = [
-    '^__version__ = "{version}"$',
+    '__version__ = "{version}"$',
 ]
 "pyproject.toml" = [
-    '^version = "{version}"$',
     '^current_version = "{version}"$'
 ]
 
