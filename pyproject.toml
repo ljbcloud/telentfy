@@ -1,41 +1,28 @@
-[project]
-name = "telentfy"
-authors = [
-    { name = "ljbcloud", email = "206458089+ljbcloud@users.noreply.github.com" }
-]
-description = "Library for sending simple text notifications to ntfy.sh and Telegram channels."
-license = { file = "LICENSE" }
-dynamic = ["version"]
-readme = "README.md"
-requires-python = ">=3.9"
-dependencies = ["aiohttp (>=3.11.18,<4.0.0)", "pydantic-settings (>=2.7.0,<3.0.0)"]
-
-[dependency-groups]
-dev = [
-    "ruff",
-    "bumpver"
-]
-
 [build-system]
 requires = ["hatchling", "uv-dynamic-versioning"]
 build-backend = "hatchling.build"
 
-[tool.hatch.version]
-source = "uv-dynamic-versioning"
+[dependency-groups]
+dev = [{include-group = "lint"}, {include-group = "release"}]
+lint = ["ruff"]
+release = ["bumpver"]
 
-[tool.uv-dynamic-versioning]
-enable = true
-format-jinja = """
-    {%- if distance == 0 -%}
-        {{ serialize_pep440(base, stage, revision) }}
-    {%- elif branch == "main" -%}
-      {{ serialize_pep440(bump_version(base), stage, revision, dev=distance) }}
-    {%- elif revision is not none -%}
-        {{ serialize_pep440(base, stage, revision + 1, dev=distance, metadata=[commit]) }}
-    {%- else -%}
-        {{ serialize_pep440(bump_version(base), stage, revision, dev=distance, metadata=[commit]) }}
-    {%- endif -%}
-"""
+[project]
+name = "telentfy"
+description = "Library for sending simple text notifications to ntfy.sh and Telegram channels."
+authors = [{ name = "ljbcloud", email = "206458089+ljbcloud@users.noreply.github.com" }]
+license = { file = "LICENSE" }
+dynamic = ["version"]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "aiohttp (>=3.11.18,<4.0.0)",
+    "pydantic-settings (>=2.7.0,<3.0.0)",
+    "typer>=0.16.0",
+]
+
+[project.scripts]
+telentfy = "telentfy.cli:main"
 
 [tool.bumpver]
 current_version = "0.0.3"
@@ -47,12 +34,18 @@ push = false # pushes the commit automatically to github
 tag = true # creates a new tag for the version update
 
 [tool.bumpver.file_patterns]
+"README.md" = [
+    "telentfy=={version}"
+]
 "src/telentfy/__init__.py" = [
     '__version__ = "{version}"$',
 ]
 "pyproject.toml" = [
     '^current_version = "{version}"$'
 ]
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
 
 [tool.ruff]
 line-length = 99
@@ -100,3 +93,17 @@ ban-relative-imports = "all"
 [tool.ruff.lint.flake8-bugbear]
 # This is only needed if Typer is a dependency of the project.
 extend-immutable-calls = ["typer.Argument"]
+
+[tool.uv-dynamic-versioning]
+enable = true
+format-jinja = """
+    {%- if distance == 0 -%}
+        {{ serialize_pep440(base, stage, revision) }}
+    {%- elif branch == "main" -%}
+      {{ serialize_pep440(bump_version(base), stage, revision, dev=distance) }}
+    {%- elif revision is not none -%}
+        {{ serialize_pep440(base, stage, revision + 1, dev=distance, metadata=[commit]) }}
+    {%- else -%}
+        {{ serialize_pep440(bump_version(base), stage, revision, dev=distance, metadata=[commit]) }}
+    {%- endif -%}
+"""
