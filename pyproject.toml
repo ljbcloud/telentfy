@@ -96,6 +96,7 @@ extend-immutable-calls = ["typer.Argument"]
 
 [tool.uv-dynamic-versioning]
 enable = true
+pattern = "default-unprefixed"
 format-jinja = """
     {%- if distance == 0 -%}
         {{ serialize_pep440(base, stage, revision) }}
