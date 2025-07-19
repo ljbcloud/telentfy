@@ -6,6 +6,6 @@ from telentfy.settings import TelentfySettings
 try:
     __version__ = importlib.metadata.version(__name__)
 except importlib.metadata.PackageNotFoundError:
-    __version__ = "0.0.4"
+    __version__ = "0.0.5"
 
 __all__ = ["NotificationError", "Notifier", "TelentfySettings"]

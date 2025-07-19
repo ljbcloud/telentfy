@@ -25,7 +25,7 @@ dependencies = [
 telentfy = "telentfy.cli:main"
 
 [tool.bumpver]
-current_version = "0.0.4"
+current_version = "0.0.5"
 version_pattern = "MAJOR.MINOR.PATCH"
 # below fields are optional, default value is false
 commit_message = "chore: update version {old_version} -> {new_version}"
