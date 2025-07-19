@@ -11,15 +11,32 @@ jobs:
     name: Build distribution 📦
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           persist-credentials: false
-      - name: Set up Python
-        uses: actions/setup-python@v5
-      - name: Install poetry
-        run: python3 -m pip install poetry --user
+
+      - name: Cache asdf Tools
+        uses: actions/cache@v4
+        id: cache-asdf
+        with:
+          path: ~/.asdf
+          key: asdf-cache-${{ runner.os }}-${{ hashFiles('.tool-versions') }}
+
+      - name: Cache Virtual Environment
+        uses: actions/cache@v4
+        id: cache-venv
+        with:
+          path: .venv
+          key: venv-cache-${{ runner.os }}-${{ hashFiles('uv.lock') }}-${{ hashFiles('.github/workflows/build-and-publish.yaml') }}
+
+      - name: Install Dependencies via asdf
+        uses: asdf-vm/actions/install@v4
+
       - name: Build a binary wheel and a source tarball
-        run: poetry build
+        run: uv build
+
       - name: Store the distribution packages
         uses: actions/upload-artifact@v4
         with:
