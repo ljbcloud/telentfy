@@ -9,6 +9,8 @@ class TelentfySettings(BaseSettings):
     def __init__(self: Self, env_file: str = ".env", env_prefix: str = "TELENTFY_", **values: Any):
         super().__init__(_env_file=env_file, _env_prefix=env_prefix)
 
+    DEBUG: bool = False
+
     # ntfy
     NTFY_URL: str = "https://ntfy.sh"
     NTFY_TOPIC: Optional[str] = None
