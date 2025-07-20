@@ -70,10 +70,13 @@ class Notifier:
             raise NotificationError(f"unexpected error: {e!s}") from e
 
     async def send_notification(self: Self, message: str, log_level: int = logging.INFO) -> None:
-        if self.telegram_enabled:
-            await self.notify_telegram(message, log_level)
-        if self.ntfy_enabled:
-            await self.notify_ntfy(message, log_level)
+        if not self.telegram_enabled and not self.ntfy_enabled:
+            raise NotificationError("no configured destination")
+        else:
+            if self.telegram_enabled:
+                await self.notify_telegram(message, log_level)
+            if self.ntfy_enabled:
+                await self.notify_ntfy(message, log_level)
 
     async def notify_ntfy(self: Self, message: str, log_level: int = logging.INFO) -> None:
         logger.log(msg=f"sending notification: {message}", level=log_level)
