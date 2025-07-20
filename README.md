@@ -5,7 +5,7 @@ Library for sending simple text notifications to [ntfy.sh][] and [Telegram][] ch
 ## Installation
 
 ```shell
-pip install telentfy==0.0.5
+pip install telentfy==0.0.6
 ```
 
 ## Usage
